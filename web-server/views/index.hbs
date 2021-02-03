@@ -10,6 +10,14 @@
   <body>
     <div class="main">
         {{>header}}
+        <p>Enter a location to get current weather:</p>
+        <form action="">
+          <input type="text" placeholder="Enter city" />
+          <button type="submit">Search</button>
+        </form>
+
+        <p id='message-1'></p>
+        <p id='message-2'></p>
     </div>
 
     {{>footer}}

@@ -1,6 +1,8 @@
 const path = require('path')
 const express = require('express')
 const hbs = require('hbs')
+const mapbox = require('./utils/mapbox')
+const forecast = require('./utils/forecast')
 
 const app = express()
 
@@ -31,9 +33,27 @@ app.get('/help', (req, res) => {
 })
 
 app.get('/weather', (req, res) => {
-  res.send({
-    location: 'Las Vegas',
-    forecast: 'Cold',
+  if (!req.query.address) {
+    return res.send({
+      error: 'You must provide a valid location',
+    })
+  }
+
+  mapbox(req.query.address, (error, { longitude, latitude, location } = {}) => {
+    if (error) {
+      res.send({ error })
+    }
+
+    forecast(longitude, latitude, (error, forecastData) => {
+      if (error) {
+        return res.send({ error })
+      }
+      res.send({
+        location,
+        forecastData,
+        address: req.query.address,
+      })
+    })
   })
 })
 
